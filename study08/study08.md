@@ -131,13 +131,82 @@ for tc in range(1,T+1):
 ```python
 [55, 7, 78, 12, 42]를 버블 정렬하는 과정(오름차순)
 
-def bubble_sort(a, N): # 정렬할 List, N 원소 수
-    for i in range(N-1, 0, -1): # 범위의 끝 위치
-        for j in range(i): # 비교할 왼쪽 원소 인덱스 j
-            if a[j]>a[j+1]:
-                a[j], a[j+1] = a[j+1], a[j]
+def bubble_sort(arr):
+    for i in range(len(arr)):
+        for j in range(0, len(arr)-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
 ```
 
+#### 카운팅 정렬
+- 항목들의 순서를 결정하기 위해 집합에 각 항목이 몇 개씩 있는지 세는 작업을 하여
+- 선형 시간에 정렬하는 효율적인 방식
 
+##### 카운팅 정렬 제한 사항
+1. 정수나 정수로 표현할 수 있는 자료에 대해서만 적용 가능
+2. 카운트들을 위한 충분한 공간을 할당하려면 집합 내의 가장 큰 정수를 알아야 함
+
+- 시간 복잡도 -> O(n+k): n은 리스트 길이, k는 정수의 최댓값
+
+###### 카운팅 정렬 과정 예시
+```python
+[0, 4, 1, 3, 1, 2, 4, 1]을 카운팅 정렬하는 과정
+
+def count_sort(arr):
+    count_data = [0] * (max(arr)+1)
+    temp = [0] * (len(arr))
+    for i in arr:
+        count_data[i] += 1 # 각 데이터의 개수 세기
+    for i in range(max(arr)):
+        count_data[i+1] += count_data[i] # 각 데이터의 누적 합
+    for i in range(len(arr)):
+        temp[count_data[arr[i]] - 1] = arr[i] # 누적 합 번째에 해당 데이터 값 삽입
+        count_data[arr[i]] -= 1 
+
+    return temp
+```
+
+#### 완전 검색
+- 문제의 해법으로 생각할 수 있는 모든 경우의 수를 나열해보고 확인하는 기법
+- 모든 경우의 수를 생성, 테스트하기 때문에 수행 속도는 느리지만, 해답을 찾아내지 못할 확률이 적음
+
+#### 탐욕 알고리즘
+- 여러 경우 중 하나를 결정해야 할 때마다, 그 순간에 최적이라고 생각되는 것을 선택해 나가는 방식으로 진행, 최종적 해답에 도달하는 방식
+- 최적해를 구하는 데 사용되는 근시안적 방법
+
+```python
+# baby-gin 문제 예시
+# 6개의 숫자는 6자리의 정수 값으로 입력된다.
+# counts 배열의 각 원소를 체크하여 run 과 triple 및 baby-gin 여부를 판단
+# run -> 연속된 숫자 3개, triple -> 같은 숫자 3개
+
+num = 456789
+c = [0] * 12 
+for i in range(6):
+    c[num % 10] += 1
+    num //= 10
+
+i = 0
+tri = run = 0
+while i<10:
+    if c[i] >= 3:
+        c[i] -= 3
+        tri += 1
+        continue -> 6일 경우 한 번 더 돌리기 위함
+    elif c[i] >= 1 and c[i+1] >= 1 and c[i+2] >= 1:
+        c[i] -= 1
+        c[i+1] -= 1
+        c[i+2] -= 1
+        run += 1
+        continue
+    i += 1
+
+if run + tri == 2:
+    print('Baby Gin')
+else:
+    print('Lose')
+
+```
 
 
